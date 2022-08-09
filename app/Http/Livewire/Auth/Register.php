@@ -19,12 +19,13 @@ class Register extends Component
             'password' => 'required|min:6|same:passwordConfirmation',
         ]);
 
-        User::create([
+        $user = User::create([
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
 
         $this->email = '';
+        auth()->login($user);
         return redirect('/');
     }
 
