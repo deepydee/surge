@@ -75,14 +75,14 @@ class RegistrationTest extends TestCase
    function see_email_hasnt_already_been_taken_validation_message_as_user_types()
    {
         User::create([
-            'email' => 'synthex@bk.ru',
+            'email' => 'pupu@bk.ru',
             'password' => Hash::make('secret'),
         ]);
 
         Livewire::test('auth.register')
-            ->set('email', 'synthex@bk.ru')
+            ->set('email', 'pupi@bk.ru')
             ->assertHasNoErrors()
-            ->set('email', 'synthex@bk.ru')
+            ->set('email', 'pupu@bk.ru')
             ->assertHasErrors(['email' => 'unique']);
    }
 
