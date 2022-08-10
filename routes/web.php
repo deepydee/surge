@@ -3,14 +3,16 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+Route::redirect('/', 'dashboard');
+
 /**
  * App Routes
  */
 
 Route::middleware('auth')->group(function () {
-    Route::redirect('/', 'dashboard');
     Route::get('/dashboard', \App\Http\Livewire\Dashboard::class)->name('dashboard');
     Route::get('/profile', \App\Http\Livewire\Profile::class)->name('profile');
+    
     Route::get('/logout', function () {
         Auth::logout();
         return redirect()->route('auth.login');
