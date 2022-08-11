@@ -37,15 +37,41 @@ class ProfileTest extends TestCase
             ->set('about', 'bar')
             ->call('save');
 
-            // dd([
-            //     $user->username,
-            //     $user->about
-            // ]);
-
         $user->refresh();
        
         $this->assertEquals('foo', $user->username);
         $this->assertEquals('bar', $user->about);
+    }
+
+    /** @test */
+
+    function profile_info_is_pre_populated()
+    {
+        $user = User::factory()->create([
+            'username' => 'foo',
+            'about' => 'bar',
+        ]);
+        
+        Livewire::actingAs($user)
+            ->test('profile')
+            ->assertSet('username', 'foo')
+            ->assertSet('about', 'bar');
+    }
+
+    /** @test */
+
+    function message_is_shown_on_save()
+    {
+        $user = User::factory()->create([
+            'username' => 'foo',
+            'about' => 'bar',
+        ]);
+        
+        Livewire::actingAs($user)
+            ->test('profile')
+            ->assertDontSee('Successfully saved!')
+            ->call('save')
+            ->assertSee('Successfully saved!');
     }
 
     /** @test */
