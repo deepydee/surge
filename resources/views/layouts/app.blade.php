@@ -138,5 +138,8 @@
         </div>
       </main>
     </div>
-  </div>
+
+    <x-notification />
+    
+</div>
 @overwrite
