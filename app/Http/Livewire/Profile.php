@@ -39,7 +39,8 @@ class Profile extends Component
         ]);
 
         auth()->user()->update($profileData);
-        session()->flash('notify-saved');
+
+        $this->emitSelf('notify-saved');
     }
 
     public function render()

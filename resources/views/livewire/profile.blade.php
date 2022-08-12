@@ -61,21 +61,19 @@
 
             <div class="pt-5">
                 <div class="flex justify-end items-center space-x-3">
-                    <span>
-                        @if (session()->has('notify-saved'))
-                            <span
-                            x-data="{ open: true }"
-                            x-init="
-                                setTimeout(() => {open = false}, 2500);
-                                setTimeout(() => {$refs.this.remove()}, 3500);
-                            "
-                            x-show="open"
-                            x-transition.duration.1000ms
-                            x-ref="this"
-                            class="text-gray-500"
-                            >Saved!</span>
-                        @endif
-                    </span>
+                    <span
+                    x-data="{ open: false }"
+                    x-init="
+                       @this.on('notify-saved', () => {
+                            open = true;
+                            setTimeout(() => {open = false}, 2500);
+                        });
+                    "
+                    x-show="open"
+                    x-transition:leave.duration.1000ms
+                    x-cloak
+                    class="text-gray-500"
+                    >Saved!</span>
                     <button type="button"
                         class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Cancel</button>
                     <button type="submit"
