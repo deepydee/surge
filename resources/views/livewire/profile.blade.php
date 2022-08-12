@@ -15,6 +15,11 @@
                     />
                 </x-input.group>
 
+                <x-input.group label="Birthday" for="birthday" :error="$errors->first('birthday')">
+                    
+                    <x-input.date  wire:model.lazy='birthday' name="birthday" id="birthday" placeholder="DD/MM/YYYY"/>
+                </x-input.group>
+
                 <x-input.group label="About" for="about" :error="$errors->first('about')" help-text="Write a few sentences about yourself (Max 140 characters)">
                     <x-input.textarea wire:model='about' name="about" id="about" />
                 </x-input.group>
