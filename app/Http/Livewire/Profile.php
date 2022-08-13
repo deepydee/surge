@@ -3,12 +3,16 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Profile extends Component
 {
+    use WithFileUploads;
+
     public $username = '';
     public $about = '';
     public $birthday = null;
+    public $newAvatar;
 
     public function mount()
     {
@@ -22,6 +26,13 @@ class Profile extends Component
         $this->validate([
             'username' => 'max:24',
             'about' => 'max:140',
+        ]);
+    }
+
+    public function updatedNewAvatar()
+    {
+        $this->validate([
+            'newAvatar' => 'image|max:300',
         ]);
     }
 
@@ -39,9 +50,17 @@ class Profile extends Component
             'username' => 'max:24',
             'about' => 'max:140',
             'birthday' => 'sometimes',
+            'newAvatar' => 'image|max:300',
         ]);
 
-        auth()->user()->update($profileData);
+        $filename = $this->newAvatar->store('/', 'avatars');
+
+        auth()->user()->update([
+            'username' => $this->username,
+            'about' => $this->about,
+            'birthday' => $this->birthday,
+            'photo' => $filename
+        ]);
 
         $this->emitSelf('notify-saved');
     }
