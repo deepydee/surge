@@ -14,6 +14,13 @@ class Profile extends Component
     public $birthday = null;
     public $newAvatar;
 
+    protected $rules = [
+        'username' => 'max:24',
+        'about' => 'max:140',
+        'birthday' => 'sometimes',
+        'newAvatar' => 'nullable|image|max:300',
+    ];
+
     public function mount()
     {
         $this->username = auth()->user()->username;
@@ -32,7 +39,7 @@ class Profile extends Component
     public function updatedNewAvatar()
     {
         $this->validate([
-            'newAvatar' => 'image|max:300',
+            'newAvatar' => 'nullable|image|max:300',
         ]);
     }
 
@@ -46,28 +53,21 @@ class Profile extends Component
     
     public function save()
     {
-        $profileData = $this->validate([
-            'username' => 'max:24',
-            'about' => 'max:140',
-            'birthday' => 'sometimes',
-            'newAvatar' => 'image|max:300',
-        ]);
-
-        $filename = $this->newAvatar->store('/', 'avatars');
+        $this->validate();
 
         auth()->user()->update([
             'username' => $this->username,
             'about' => $this->about,
             'birthday' => $this->birthday,
-            'photo' => $filename
         ]);
 
-        $this->emitSelf('notify-saved');
-    }
+        if($this->newAvatar) {
+             $filename = $this->newAvatar->store('/', 'avatars');
+             auth()->user()->update([
+                'photo' => $filename
+            ]);
+        }
 
-    public function render()
-    {
-        return view('livewire.profile')
-            ->layout('layouts.app');
+        $this->emitSelf('notify-saved');
     }
 }

@@ -9,20 +9,18 @@ class Login extends Component
     public $email = '';
     public $password = '';
 
+    protected $rules = [
+        'email' => 'required|email',
+        'password' => 'required',
+    ];
+
     public function login()
     {
-        $credentials = $this->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $credentials = $this->validate();
 
-        if (auth()->attempt($credentials)) {
-            return redirect()->route('dashboard');
-        }
-
-        $this->addError('email', trans('auth.failed'));
-        $this->email = '';
-        $this->password = '';
+        return auth()->attempt($credentials)
+            ? redirect()->route('dashboard')
+            : $this->addError('email', trans('auth.failed'));
     }
 
     public function render()
