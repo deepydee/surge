@@ -25,7 +25,9 @@
                 </x-input.group>
 
                 <x-input.group label="Photo" for="photo" :error="$errors->first('newAvatar')">
-                    <x-input.avatar wire:model='newAvatar' id="photo">
+
+                    <x-input.filepond wire:model='newAvatar'>
+
                         <span class="h-12 w-12 rounded-full overflow-hidden bg-gray-100">
                             @if ($newAvatar)
                                 <img src="{{ $newAvatar->temporaryUrl() }}" alt="Profile photo">
@@ -33,7 +35,9 @@
                                 <img src="{{ auth()->user()->avatarUrl() }}" alt="Profile photo">
                             @endif
                         </span>
-                    </x-input.avatar>
+
+                    </x-input.filepond>
+                
                 </x-input.group>
 
 
