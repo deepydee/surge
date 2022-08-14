@@ -14,7 +14,7 @@
 </head>
 <body class="antialiased font-sans bg-gray-100">
 
-    @yield('content')
+    {{ $slot }}
 
     @livewireScripts
     @stack('scripts')
