@@ -1,8 +1,8 @@
 <div 
     class="max-w-lg flex rounded-md shadow-sm"
-    x-data
+    x-data="{ value: @entangle($attributes->wire('model')) }"
     x-init="new Pikaday({ field: $refs.input, format: 'MM/DD/Y' });"
-    @change="$dispatch('input', $event.target.value)"
+    x-on:change="value = $event.target.value"
     >
     <span class="py-2 inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -11,8 +11,9 @@
     </span>
 
     <input 
-        {{ $attributes }}
+        {{ $attributes->whereDoesntStartWith('wire:model') }}
         x-ref="input"
+        x-bind:value="value"
         type="text"
         class="rounded-none rounded-r-md border py-2 px-2 flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 sm:text-sm border-gray-300">
 </div>

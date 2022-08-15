@@ -16,12 +16,11 @@
                 </x-input.group>
 
                 <x-input.group label="Birthday" for="birthday" :error="$errors->first('birthday')">
-                    
-                    <x-input.date  wire:model.lazy='user.birthday' name="birthday" id="birthday" placeholder="DD/MM/YYYY"/>
+                    <x-input.date wire:model.lazy='user.birthday' name="birthday" id="birthday" placeholder="MM/DD/YYYY"/>
                 </x-input.group>
 
                 <x-input.group label="About" for="about" :error="$errors->first('about')" help-text="Write a few sentences about yourself (Max 140 characters)">
-                    <x-input.rich-text wire:model.lazy='user.about' id="about" :initial-value="$user->about"/>
+                    <x-input.rich-text wire:model.defer='user.about' id="about"/>
                 </x-input.group>
 
                 <x-input.group label="Photo" for="photo" :error="$errors->first('upload')">
