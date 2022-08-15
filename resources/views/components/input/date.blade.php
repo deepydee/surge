@@ -1,7 +1,14 @@
 <div 
     class="max-w-lg flex rounded-md shadow-sm"
     x-data="{ value: @entangle($attributes->wire('model')) }"
-    x-init="new Pikaday({ field: $refs.input, format: 'MM/DD/Y' });"
+    x-init="
+        new Pikaday({ 
+            field: $refs.input, 
+            format: 'MM/DD/YYYY',
+            defaultDate: moment(value).toDate(),
+            setDefaultDate: true,
+        });
+    "
     x-on:change="value = $event.target.value"
     >
     <span class="py-2 inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
