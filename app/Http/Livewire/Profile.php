@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -9,65 +10,49 @@ class Profile extends Component
 {
     use WithFileUploads;
 
-    public $username = '';
-    public $about = '';
-    public $birthday = null;
-    public $newAvatar;
+    public User $user;
+    public $upload;
 
     protected $rules = [
-        'username' => 'max:24',
-        'about' => 'max:140',
-        'birthday' => 'sometimes',
-        'newAvatar' => 'nullable|image|max:300',
+        'user.username' => 'max:24',
+        'user.about' => 'max:140',
+        'user.birthday' => 'sometimes',
+        'upload' => 'nullable|image|max:300',
     ];
 
-    public function mount()
-    {
-        $this->username = auth()->user()->username;
-        $this->about = auth()->user()->about;
-        $this->birthday = auth()->user()->birthday->format('m/d/Y');
-    }
+    public function mount() { $this->user = auth()->user(); }
 
     public function updatedUsername()
     {
         $this->validate([
-            'username' => 'max:24',
-            'about' => 'max:140',
+            'user.username' => 'max:24',
+            'user.about' => 'max:140',
         ]);
     }
 
-    public function updatedNewAvatar()
+    public function updatedupload()
     {
         $this->validate([
-            'newAvatar' => 'nullable|image|max:300',
+            'upload' => 'nullable|image|max:300',
         ]);
     }
 
     public function updatedAbout()
     {
         $this->validate([
-            'username' => 'max:24',
-            'about' => 'max:140',
+            'user.username' => 'max:24',
+            'user.about' => 'max:140',
         ]);
     }
     
     public function save()
     {
         $this->validate();
-
-        auth()->user()->update([
-            'username' => $this->username,
-            'about' => $this->about,
-            'birthday' => $this->birthday,
+        $this->user->save();
+        $this->upload && $this->user->update([
+            'photo' => $this->upload->store('/', 'avatars')
         ]);
-
-        if($this->newAvatar) {
-             $filename = $this->newAvatar->store('/', 'avatars');
-             auth()->user()->update([
-                'photo' => $filename
-            ]);
-        }
-
+        
         $this->emitSelf('notify-saved');
     }
 }

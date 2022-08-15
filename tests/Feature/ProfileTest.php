@@ -35,8 +35,8 @@ class ProfileTest extends TestCase
         
         Livewire::actingAs($user)
             ->test('profile')
-            ->set('username', 'foo')
-            ->set('about', 'bar')
+            ->set('user.username', 'foo')
+            ->set('user.about', 'bar')
             ->call('save');
 
         $user->refresh();
@@ -55,7 +55,7 @@ class ProfileTest extends TestCase
         
         Livewire::actingAs($user)
             ->test('profile')
-            ->set('newAvatar', $file)
+            ->set('upload', $file)
             ->call('save');
 
         $user->refresh();
@@ -76,8 +76,8 @@ class ProfileTest extends TestCase
         
         Livewire::actingAs($user)
             ->test('profile')
-            ->assertSet('username', 'foo')
-            ->assertSet('about', 'bar');
+            ->assertSet('user.username', 'foo')
+            ->assertSet('user.about', 'bar');
     }
 
     /** @test */
@@ -103,10 +103,10 @@ class ProfileTest extends TestCase
 
         Livewire::actingAs($user)
             ->test('profile')
-            ->set('username', str_repeat('a', 25))
-            ->set('about', 'bar')
+            ->set('user.username', str_repeat('a', 25))
+            ->set('user.about', 'bar')
             ->call('save')
-            ->assertHasErrors(['username' => 'max']);
+            ->assertHasErrors(['user.username' => 'max']);
     }
 
     /** @test */
@@ -117,10 +117,10 @@ class ProfileTest extends TestCase
 
         Livewire::actingAs($user)
             ->test('profile')
-            ->set('username', 'foo')
-            ->set('about', str_repeat('a', 141))
+            ->set('user.username', 'foo')
+            ->set('user.about', str_repeat('a', 141))
             ->call('save')
-            ->assertHasErrors(['about' => 'max']);
+            ->assertHasErrors(['user.about' => 'max']);
     }
 
 }

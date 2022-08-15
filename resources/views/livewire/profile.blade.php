@@ -11,24 +11,24 @@
             <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
 
                 <x-input.group label="Username" for="username" :error="$errors->first('username')" help-text="Max 24 characters">
-                    <x-input.text wire:model='username' name="username" id="username" autocomplete="username" leading-add-on="surge.test/"
+                    <x-input.text wire:model='user.username' name="username" id="username" autocomplete="username" leading-add-on="surge.test/"
                     />
                 </x-input.group>
 
                 <x-input.group label="Birthday" for="birthday" :error="$errors->first('birthday')">
                     
-                    <x-input.date  wire:model.lazy='birthday' name="birthday" id="birthday" placeholder="DD/MM/YYYY"/>
+                    <x-input.date  wire:model.lazy='user.birthday' name="birthday" id="birthday" placeholder="DD/MM/YYYY"/>
                 </x-input.group>
 
                 <x-input.group label="About" for="about" :error="$errors->first('about')" help-text="Write a few sentences about yourself (Max 140 characters)">
-                    <x-input.rich-text wire:model.lazy='about' id="about" :initial-value="$about"/>
+                    <x-input.rich-text wire:model.lazy='user.about' id="about" :initial-value="$user->about"/>
                 </x-input.group>
 
-                <x-input.group label="Photo" for="photo" :error="$errors->first('newAvatar')">
-                    <x-input.avatar wire:model='newAvatar' id="photo">
+                <x-input.group label="Photo" for="photo" :error="$errors->first('upload')">
+                    <x-input.avatar wire:model='upload' id="photo">
                         <span class="h-12 w-12 rounded-full overflow-hidden bg-gray-100">
-                            @if ($newAvatar)
-                                <img src="{{ $newAvatar->temporaryUrl() }}" alt="Profile photo">
+                            @if ($upload)
+                                <img src="{{ $upload->temporaryUrl() }}" alt="Profile photo">
                             @else
                                 <img src="{{ auth()->user()->avatarUrl() }}" alt="Profile photo">
                             @endif
