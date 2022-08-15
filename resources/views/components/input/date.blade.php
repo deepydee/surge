@@ -5,8 +5,7 @@
         new Pikaday({ 
             field: $refs.input, 
             format: 'MM/DD/YYYY',
-            defaultDate: moment(value).toDate(),
-            setDefaultDate: true,
+            onOpen() { this.setDate($refs.input.value) }
         });
     "
     x-on:change="value = $event.target.value"
