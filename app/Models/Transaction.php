@@ -22,9 +22,10 @@ class Transaction extends Model
     public function getStatusColorAttribute()
     {
         return [
+            'processing' => 'yellow',
             'success' => 'green',
             'failed' => 'red',
-        ][$this->status] ?? 'cool-gray';
+        ][$this->status] ?? 'gray';
     }
 
     public function getDateForHumansAttribute()
