@@ -1,6 +1,11 @@
 @section('title', 'Dashboard')
 
-<div class="py-4">
+<div class="py-4 space-y-4">
+
+    <div class="w-1/4">
+        <x-input.text wire:model='search' placeholder="Search Transactions..."/>
+    </div>
+
     <div class="flex-col space-y-4">
         <x-table>
             <x-slot name="head">
@@ -10,8 +15,8 @@
                 <x-table.heading sortable>Date</x-table.heading>
             </x-slot>
             <x-slot name="body">
-                @foreach ($transactions as $transaction)
-                    <x-table.row>
+                @forelse ($transactions as $transaction)
+                    <x-table.row wire:loading.class.delay='opacity-50'>
                         <x-table.cell>
                             <span href="#" class="inline-flex space-x-2 truncate text-sm">
                                 <x-icon.cash class="text-gray-400"/>
@@ -33,7 +38,16 @@
                             {{ $transaction->date_for_humans }}
                         </x-table.cell>
                     </x-table.row>
-                @endforeach
+                @empty
+                    <x-table.row>
+                        <x-table.cell colspan="4">
+                            <div class="flex justify-center items-center space-x-2">
+                                <x-icon.inbox class="h-8 inline-block text-gray-300 w-8"/>
+                                <span class='font-medium py-8 text-gray-400 text-lg'>No transactions found...</span>
+                            </div>
+                        </x-table.cell>
+                    </x-table.row>
+                @endforelse
             </x-slot>
         </x-table>
         <div>
