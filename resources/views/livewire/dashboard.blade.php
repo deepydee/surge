@@ -3,13 +3,52 @@
 <div class="py-4 space-y-4">
 
     <div class="flex justify-between">
-        <div class="w-1/4">
-            <x-input.text wire:model='search' placeholder="Search Transactions..."/>
+        <div class="w-2/4 flex space-x-4">
+            <x-input.text wire:model='filters.search' placeholder="Search Transactions..."/>
+            <x-button.link wire:click="$toggle('showFilters')">@if($showFilters) Hide @endif Advanced search...</x-button.link>
         </div>
 
         <div>
             <x-button.primary wire:click='create'><x-icon.plus />New</x-button.primary>
         </div>
+    </div>
+
+    <div>
+        @if ($showFilters)
+        <div class="bg-gray-100 p-4 rounded shadow-inner flex relative">
+            <div class="w-1/2 pr-2 space-y-4">
+                <x-input.group inline for="filter-status" label="Status">
+                    <x-input.select wire:model="filters.status" id="filter-status">
+                        <option value="" disabled>Select Status...</option>
+
+                        @foreach (App\Models\Transaction::STATUSES as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                        @endforeach
+                    </x-input.select>
+                </x-input.group>
+
+                <x-input.group inline for="filter-amount-min" label="Minimum Amount">
+                    <x-input.money wire:model.lazy="filters.amount-min" id="filter-amount-min" />
+                </x-input.group>
+
+                <x-input.group inline for="filter-amount-max" label="Maximum Amount">
+                    <x-input.money wire:model.lazy="filters.amount-max" id="filter-amount-max" />
+                </x-input.group>
+            </div>
+
+            <div class="w-1/2 pl-2 space-y-4">
+                <x-input.group inline for="filter-date-min" label="Minimum Date">
+                    <x-input.date wire:model="filters.date-min" id="filter-date-min" placeholder="MM/DD/YYYY" />
+                </x-input.group>
+
+                <x-input.group inline for="filter-date-max" label="Maximum Date">
+                    <x-input.date wire:model="filters.date-max" id="filter-date-max" placeholder="MM/DD/YYYY" />
+                </x-input.group>
+
+                <x-button.link wire:click="resetFilters" class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
+            </div>
+        </div>
+        @endif
     </div>
 
     <div class="flex-col space-y-4">
@@ -37,7 +76,13 @@
                             <span class="text-gray-900 font-medium">${{ $transaction->amount }} USD</span>
                         </x-table.cell>
                         <x-table.cell>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  bg-{{$transaction->status_color}}-100 text-{{$transaction->status_color}}-800 capitalize">
+                            @if ($transaction->status_color == 'red')
+                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 capitalize">
+                            @elseif ($transaction->status_color == 'green')
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">
+                            @elseif ($transaction->status_color == 'yellow')
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 capitalize">
+                            @endif
                                 {{ $transaction->status }}
                             </span>
                         </x-table.cell>
@@ -50,7 +95,7 @@
                     </x-table.row>
                 @empty
                     <x-table.row>
-                        <x-table.cell colspan="4">
+                        <x-table.cell colspan="5">
                             <div class="flex justify-center items-center space-x-2">
                                 <x-icon.inbox class="h-8 inline-block text-gray-300 w-8"/>
                                 <span class='font-medium py-8 text-gray-400 text-lg'>No transactions found...</span>
