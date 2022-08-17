@@ -15,6 +15,7 @@ class Dashboard extends Component
     public $sortDirection = 'asc';
     public $showEditModal = false;
     public $showFilters = false;
+    public $selected = [];
     public $filters = [
         'search' => '',
         'status' => '',
@@ -57,6 +58,19 @@ class Dashboard extends Component
         }
 
         $this->sortField = $field;
+    }
+
+    public function exportSelected()
+    {
+        return response()->streamDownload(function () {
+            echo Transaction::whereKey($this->selected)->toCsv();
+        }, 'transactions.csv');
+    }
+
+    public function deleteSelected()
+    {
+       $transactions = Transaction::whereKey($this->selected);
+       $transactions->delete();
     }
 
     public function create()
