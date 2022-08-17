@@ -26,8 +26,18 @@ class Dashboard extends Component
             'editing.status' => 'required|in:'.collect(Transaction::STATUSES)
                 ->keys()
                 ->implode(','),
-            'editing.date_for_editing' => 'required',
+            'editing.date' => 'required',
         ];
+    }
+
+    public function mount()
+    {
+        $this->editing = $this->makeBlankTransaction();
+    }
+
+    public function makeBlankTransaction()
+    {
+        return Transaction::make(['status' => 'processing', 'date' => now()->format('m/d/Y'), ]);
     }
 
     public function sortBy($field)
@@ -41,9 +51,15 @@ class Dashboard extends Component
         $this->sortField = $field;
     }
 
+    public function create()
+    {
+        if ($this->editing->getKey()) $this->editing = $this->makeBlankTransaction();
+        $this->showEditModal = true;
+    }
+
     public function edit(Transaction $transaction)
     {
-        $this->editing = $transaction;
+        if ($this->editing->isNot($transaction)) $this->editing = $transaction;
         $this->showEditModal = true;
     }
 

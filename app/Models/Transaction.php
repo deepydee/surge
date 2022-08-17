@@ -11,13 +11,20 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'amount',
+        'status',
+        'date',
+    ];
+
     const STATUSES = [
         'success' => 'Success',
         'failed' => 'Failed',
         'processing' => 'Processing',
     ];
 
-    protected $guarded = [];
+    // protected $guarded = [];
     protected $casts = ['date' => 'date'];
 
     public function getStatusColorAttribute()
@@ -29,18 +36,27 @@ class Transaction extends Model
         ][$this->status] ?? 'gray';
     }
    
-    public function getDateForHumansAttribute()
+    // public function getDateForHumansAttribute()
+    // {
+    //     return $this->date->format('M, d Y');
+    // }
+
+    protected function date(): Attribute
     {
-        return $this->date->format('M, d Y');
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->format('m/d/Y'),
+            set: fn ($value) => Carbon::parse($value),
+        );
     }
 
-    public function getDateForEditingAttribute()
-    {
-        return $this->date->format('m/d/Y');
-    }
+    // public function getDateAttribute($value)
+    // {
+    //     dd($value)
+    //     return $value->format('m/d/Y');
+    // }
 
-    public function setDateForEditingAttribute($value)
-    {
-        $this->date = Carbon::parse($value);
-    }
+    // public function setDateAttribute($value)
+    // {
+    //     $this->date = Carbon::parse($value);
+    // }
 }

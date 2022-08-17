@@ -2,14 +2,20 @@
 
 <div class="py-4 space-y-4">
 
-    <div class="w-1/4">
-        <x-input.text wire:model='search' placeholder="Search Transactions..."/>
+    <div class="flex justify-between">
+        <div class="w-1/4">
+            <x-input.text wire:model='search' placeholder="Search Transactions..."/>
+        </div>
+
+        <div>
+            <x-button.primary wire:click='create'><x-icon.plus />New</x-button.primary>
+        </div>
     </div>
 
     <div class="flex-col space-y-4">
         <x-table>
             <x-slot name="head">
-                <x-table.heading sortable wire:click="sortBy('title')" :direction="$sortField === 'title' ? $sortDirection : null">Title</x-table.heading>
+                <x-table.heading sortable wire:click="sortBy('title')" :direction="$sortField === 'title' ? $sortDirection : null" class="w-full">Title</x-table.heading>
                 <x-table.heading sortable wire:click="sortBy('amount')" :direction="$sortField === 'amount' ? $sortDirection : null">Amount</x-table.heading>
                 <x-table.heading sortable wire:click="sortBy('status')" :direction="$sortField === 'status' ? $sortDirection : null">Status</x-table.heading>
                 <x-table.heading sortable wire:click="sortBy('date')" :direction="$sortField === 'date' ? $sortDirection : null">Date</x-table.heading>
@@ -36,7 +42,7 @@
                             </span>
                         </x-table.cell>
                         <x-table.cell>
-                            {{ $transaction->date_for_humans }}
+                            {{ Carbon\Carbon::parse($transaction->date)->format('M, d Y') }}
                         </x-table.cell>
                         <x-table.cell>
                             <x-button.link wire:click='edit({{ $transaction->id }})'>Edit</x-button.link>
@@ -66,7 +72,7 @@
             <x-slot name="content">
                 <div class="space-y-4">
                     <x-input.group for="title" label="Title" :error="$errors->first('editing.title')">
-                        <x-input.text wire:model='editing.title' id="title" />
+                        <x-input.text wire:model='editing.title' id="title" placeholder="Title" />
                     </x-input.group>
 
                     <x-input.group for="amount" label="Amount" :error="$errors->first('editing.amount')">
@@ -81,8 +87,8 @@
                         </x-input.select>
                     </x-input.group>
                     
-                    <x-input.group for="date_for_editing" label="Date" :error="$errors->first('editing.date_for_editing')">
-                        <x-input.date wire:model="editing.date_for_editing" id="date_for_editing" />
+                    <x-input.group for="date" label="Date" :error="$errors->first('editing.date')">
+                        <x-input.date wire:model="editing.date" id="date" />
                     </x-input.group>
                 </div>
             </x-slot>
