@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithSorting;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -9,16 +11,11 @@ use Livewire\WithPagination;
 
 class Dashboard extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSorting, WithBulkActions;
 
-    public $sortField;
-    public $sortDirection = 'asc';
     public $showEditModal = false;
     public $showDeleteModal = false;
     public $showFilters = false;
-    public $selectPage = false;
-    public $selectAll = false;
-    public $selected = [];
     public $filters = [
         'search' => '',
         'status' => '',
@@ -47,54 +44,24 @@ class Dashboard extends Component
 
     public function updatedFilters() { $this->resetPage(); }
 
-    public function updatedSelected()
-    {
-        $this->selectAll = false;
-        $this->selectPage = false;
-    }
-
-    public function updatedSelectPage($value)
-    {
-        $this->selected = $value
-        ?  $this->transactions->pluck('id')
-        : [];
-    }
-
-    public function selectAll()
-    {
-        $this->selectAll = true;
-    }
+   
 
     public function makeBlankTransaction()
     {
         return Transaction::make(['status' => 'processing', 'date' => now()->format('m/d/Y'), ]);
     }
 
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortDirection = 'asc';
-        }
-
-        $this->sortField = $field;
-    }
 
     public function exportSelected()
     {
         return response()->streamDownload(function () {
-            echo (clone $this->transactionsQuery)
-                ->unless($this->selectAll, fn($query) => $query->whereKey($this->selected))
-                ->toCsv();
+            echo $this->selectedRowsQuery->toCsv();
         }, 'transactions.csv');
     }
 
     public function deleteSelected()
     {
-       (clone $this->transactionsQuery)
-            ->unless($this->selectAll, fn($query) => $query->whereKey($this->selected))
-            ->delete();
+        $this->selectedRowsQuery->delete();
 
         $this->showDeleteModal = false;
     }
@@ -123,31 +90,32 @@ class Dashboard extends Component
         $this->reset('filters');
     }
 
-    public function getTransactionsQueryProperty()
+    public function getRowsQueryProperty()
     {
-        return Transaction::query()
-                ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
-                ->when($this->filters['amount-min'], fn($query, $amount) => $query->where('amount', '>=', $amount))
-                ->when($this->filters['amount-max'], fn($query, $amount) => $query->where('amount', '<', $amount))
-                ->when($this->filters['date-min'], fn($query, $date) => $query->where('date', '>=', Carbon::parse($date)))
-                ->when($this->filters['date-max'], fn($query, $date) => $query->where('date', '<', Carbon::parse($date)))
-                ->when($this->filters['search'], fn($query, $search) => $query->where('title', 'like', '%'.$search.'%'))
-                ->orderBy($this->sortField, $this->sortDirection);
+       $query = Transaction::query()
+            ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
+            ->when($this->filters['amount-min'], fn($query, $amount) => $query->where('amount', '>=', $amount))
+            ->when($this->filters['amount-max'], fn($query, $amount) => $query->where('amount', '<', $amount))
+            ->when($this->filters['date-min'], fn($query, $date) => $query->where('date', '>=', Carbon::parse($date)))
+            ->when($this->filters['date-max'], fn($query, $date) => $query->where('date', '<', Carbon::parse($date)))
+            ->when($this->filters['search'], fn($query, $search) => $query->where('title', 'like', '%'.$search.'%'));
+        
+        return $this->applySorting($query);
     }
 
-    public function getTransactionsProperty()
+    public function getRowsProperty()
     {
-        return $this->getTransactionsQueryProperty()->paginate(10);
+        return $this->rowsQuery->paginate(10);
     }
 
     public function render()
     {
         if ($this->selectAll) {
-            $this->selected = $this->transactions->pluck('id');
+            $this->selectPageRows();
         }
 
         return view('livewire.dashboard', [
-            'transactions' => $this->transactions,
+            'transactions' => $this->rows,
         ]);
     }
 }
