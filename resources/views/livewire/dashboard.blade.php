@@ -14,7 +14,7 @@
                     <x-icon.download class="text-cool-gray-400"/><span>Export</span>
                 </x-dropdown.item>
 
-                <x-dropdown.item type="button" wire:click='deleteSelected' class="flex items-center space-x-2">
+                <x-dropdown.item type="button" wire:click="$set('showDeleteModal', true)" class="flex items-center space-x-2">
                     <x-icon.trash class="text-cool-gray-400"/><span>Delete</span>
                 </x-dropdown.item>
             </x-dropdown>
@@ -24,7 +24,7 @@
 
     <div>
         @if ($showFilters)
-        <div class="bg-gray-100 p-4 rounded shadow-inner flex relative">
+        <div class="bg-gray-200 p-4 rounded shadow-inner flex relative">
             <div class="w-1/2 pr-2 space-y-4">
                 <x-input.group inline for="filter-status" label="Status">
                     <x-input.select wire:model="filters.status" id="filter-status">
@@ -64,7 +64,7 @@
         <x-table>
             <x-slot name="head">
                 <x-table.heading class="pr-0 w-8">
-                    <x-input.checkbox />
+                    <x-input.checkbox wire:model='selectPage'/>
                 </x-table.heading>
                 <x-table.heading sortable wire:click="sortBy('title')" :direction="$sortField === 'title' ? $sortDirection : null" class="w-full">Title</x-table.heading>
                 <x-table.heading sortable wire:click="sortBy('amount')" :direction="$sortField === 'amount' ? $sortDirection : null">Amount</x-table.heading>
@@ -73,6 +73,23 @@
                 <x-table.heading />
             </x-slot>
             <x-slot name="body">
+
+                @if ($selectPage)
+                    <x-table.row class="bg-gray-200" wire:key='row-message'>
+                        <x-table.cell colspan="6">
+                            @unless ($selectAll)
+                                <div>
+                                    <span>You have selected <strong>{{ $transactions->count() }}</strong> transactions. Do you want tto select all <strong>{{ $transactions->total() }}</strong>?</span>
+                                    <x-button.link wire:click='selectAll' class="ml-2 text-blue-600">Select All</x-button.link>
+                                </div>
+                            @else
+                                <span>You have selected all <strong>{{ $transactions->total() }}</strong> transactions.</span>
+                            @endunless
+
+                        </x-table.cell>
+                    </x-table.row>
+                @endif
+                
                 @forelse ($transactions as $transaction)
                     <x-table.row wire:loading.class.delay='opacity-50' wire:key='row-{{ $transaction->id }}'>
                         <x-table.cell class="pr-0">
@@ -111,7 +128,7 @@
                     </x-table.row>
                 @empty
                     <x-table.row>
-                        <x-table.cell colspan="5">
+                        <x-table.cell colspan="6">
                             <div class="flex justify-center items-center space-x-2">
                                 <x-icon.inbox class="h-8 inline-block text-gray-300 w-8"/>
                                 <span class='font-medium py-8 text-gray-400 text-lg'>No transactions found...</span>
@@ -125,6 +142,25 @@
             {{ $transactions->links() }}
         </div>
     </div>
+
+    <form wire:submit.prevent='deleteSelected'>
+        <x-modal.confirmation wire:model='showDeleteModal'>
+            <x-slot name="title">Delete Transaction</x-slot>
+
+            <x-slot name="content">
+                Are you sure you want to delete these transactions? This action is irreversable. 
+            </x-slot>
+
+            <x-slot name="footer">
+                <div class="space-x-1">
+                    <x-button.secondary wire:click="$set('showDeleteModal'), false">Cancel</x-button.secondary>
+                    <x-button.primary type='submit'>Delete</x-button.primary>
+                </div>
+            </x-slot>
+
+        </x-modal.confirmation>
+    </form>
+        
 
     <form wire:submit.prevent='save'>
         <x-modal.dialog wire:model='showEditModal'>
