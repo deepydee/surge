@@ -13,6 +13,11 @@ use Livewire\WithPagination;
 
 class Dashboard extends Component
 {
+    public function showNotification()
+    {
+        $this->dispatchBrowserEvent('notify', 'Some Message');
+    }
+
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
 
     public $showEditModal = false;

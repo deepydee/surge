@@ -1,7 +1,7 @@
 @section('title', 'Dashboard')
 
 <div class="py-4 space-y-4">
-
+    <button wire:click='showNotification'>Show Notification</button>
     <!-- Top Bar -->
     <div class="flex justify-between">
         <div class="w-1/2 flex space-x-4">
