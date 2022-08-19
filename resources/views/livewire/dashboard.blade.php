@@ -6,7 +6,7 @@
     <div class="flex justify-between">
         <div class="w-1/2 flex space-x-4">
             <x-input.text wire:model='filters.search' placeholder="Search Transactions..."/>
-            <x-button.link wire:click="$toggle('showFilters')">@if($showFilters) Hide @endif Advanced search...</x-button.link>
+            <x-button.link wire:click="toggleShowFilters">@if($showFilters) Hide @endif Advanced search...</x-button.link>
         </div>
 
         <div class="w-full flex items-center space-x-2">

@@ -19,9 +19,10 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
         \App\Models\User::factory()->create([
+            'username' => 'Vitaliy Semenoff',
             'email' => 'dev@surge.com',
         ]);
 
-        Transaction::factory()->count(250)->create();
+        Transaction::factory()->count(100000)->create();
     }
 }
