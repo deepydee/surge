@@ -10,20 +10,20 @@
 
             <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
 
-                <x-input.group label="Username" for="username" :error="$errors->first('username')" help-text="Max 24 characters">
+                <x-input.group class="sm:border-t sm:pt-5" label="Username" for="username" :error="$errors->first('username')" help-text="Max 24 characters">
                     <x-input.text wire:model='user.username' name="username" id="username" autocomplete="username" leading-add-on="surge.test/"
                     />
                 </x-input.group>
 
-                <x-input.group label="Birthday" for="birthday" :error="$errors->first('birthday')">
+                <x-input.group class="sm:border-t sm:pt-5" label="Birthday" for="birthday" :error="$errors->first('birthday')">
                     <x-input.date wire:model='user.birthday' name="birthday" id="birthday" placeholder="MM/DD/YYYY"/>
                 </x-input.group>
 
-                <x-input.group label="About" for="about" :error="$errors->first('about')" help-text="Write a few sentences about yourself (Max 140 characters)">
+                <x-input.group class="sm:border-t sm:pt-5" label="About" for="about" :error="$errors->first('about')" help-text="Write a few sentences about yourself (Max 140 characters)">
                     <x-input.rich-text wire:model.defer='user.about' id="about"/>
                 </x-input.group>
 
-                <x-input.group label="Photo" for="photo" :error="$errors->first('upload')">
+                <x-input.group class="sm:border-t sm:pt-5" label="Photo" for="photo" :error="$errors->first('upload')">
                     <x-input.avatar wire:model='upload' id="photo">
                         <span class="h-12 w-12 rounded-full overflow-hidden bg-gray-100">
                             @if ($upload)

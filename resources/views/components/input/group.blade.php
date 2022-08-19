@@ -4,7 +4,7 @@
     'error' => false,
     'helpText' => false,
 ])
-<div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-gray-200 sm:pt-5">
+<div {{ $attributes->merge(['class' => 'sm:grid sm:grid-cols-3 sm:gap-4 sm:items-startsm:border-gray-200']) }}>
     <label for= {{ $for }} class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
         {{ $label }}
     </label>

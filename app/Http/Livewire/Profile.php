@@ -30,7 +30,7 @@ class Profile extends Component
         ]);
     }
 
-    public function updatedupload()
+    public function updatedUpload()
     {
         $this->validate([
             'upload' => 'nullable|image|max:300',

@@ -4,12 +4,12 @@
 
     <!-- Top Bar -->
     <div class="flex justify-between">
-        <div class="w-2/4 flex space-x-4">
+        <div class="w-1/2 flex space-x-4">
             <x-input.text wire:model='filters.search' placeholder="Search Transactions..."/>
             <x-button.link wire:click="$toggle('showFilters')">@if($showFilters) Hide @endif Advanced search...</x-button.link>
         </div>
 
-        <div class="flex items-end space-x-2">
+        <div class="w-full flex items-center space-x-2">
 
             <x-input.group for="perPage" label="Per Page">
                 <x-input.select wire:model="perPage" id="perPage">
@@ -28,6 +28,9 @@
                     <x-icon.trash class="text-cool-gray-400"/><span>Delete</span>
                 </x-dropdown.item>
             </x-dropdown>
+
+            <livewire:import-transactions />
+
             <x-button.primary wire:click='create'><x-icon.plus />New</x-button.primary>
         </div>
     </div>
